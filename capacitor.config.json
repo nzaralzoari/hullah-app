@@ -1,0 +1,10 @@
+{
+  "appId": "com.hullah.app",
+  "appName": "HULLAH",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#0D0D0D",
+  "android": {
+    "backgroundColor": "#0D0D0D"
+  }
+}
