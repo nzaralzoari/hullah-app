@@ -1,13 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#0D0D0D" />
-    <title>HULLAH – Wear Your Identity</title>
-  </head>
-  <body class="bg-[#0D0D0D]">
-    <div id="root"></div>
-    <script type="module" src="/main.jsx"></script>
-  </body>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حُـــلـــه | HULLAH</title>
+    <style>
+        :root {
+            --pitch-black: #0D0D0D;
+            --charcoal: #1A1A1A;
+            --matte-gold: #D4AF37;
+            --off-white: #F5F5F7;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--pitch-black);
+            color: var(--off-white);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .brand-card {
+            background-color: var(--charcoal);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 40px 60px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand-ar {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--off-white);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .brand-en {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--matte-gold);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="brand-card">
+        <div class="brand-ar">حُـــلـــه</div>
+        <div class="brand-en">HULLAH</div>
+    </div>
+
+</body>
 </html>
+
