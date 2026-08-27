@@ -10,53 +10,245 @@
             --charcoal: #1A1A1A;
             --matte-gold: #D4AF37;
             --off-white: #F5F5F7;
+            --gold-hover: #b59328;
         }
 
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px;
             background-color: var(--pitch-black);
             color: var(--off-white);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            box-sizing: border-box;
         }
 
-        .brand-card {
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        html[dir="ltr"] .lang-switcher {
+            left: auto;
+            right: 20px;
+        }
+
+        .btn-lang {
+            background-color: transparent;
+            border: 1px solid var(--matte-gold);
+            color: var(--matte-gold);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-lang:hover {
+            background-color: var(--matte-gold);
+            color: var(--pitch-black);
+        }
+
+        .container {
             background-color: var(--charcoal);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 16px;
-            padding: 40px 60px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 420px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
 
         .brand-ar {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: var(--off-white);
             letter-spacing: 4px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .brand-en {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             color: var(--matte-gold);
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-transform: uppercase;
+            margin-bottom: 30px;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: start;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--off-white);
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--pitch-black);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
+            color: var(--off-white);
+            box-sizing: border-box;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            border-color: var(--matte-gold);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--matte-gold);
+            color: var(--pitch-black);
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-action:hover {
+            background-color: var(--gold-hover);
+        }
+
+        .otp-section {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            padding-top: 20px;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
     </style>
 </head>
 <body>
 
-    <div class="brand-card">
-        <div class="brand-ar">حُـــلـــه</div>
-        <div class="brand-en">HULLAH</div>
+    <div class="lang-switcher">
+        <button class="btn-lang" onclick="toggleLanguage()">EN</button>
     </div>
 
+    <div class="container">
+        <div class="brand-ar" id="brandAr">حُـــلـــه</div>
+        <div class="brand-en" id="brandEn">HULLAH</div>
+
+        <div id="phoneForm">
+            <div class="form-group">
+                <label id="lblPhone">رقم الهاتف:</label>
+                <input type="tel" id="phoneInput" placeholder="77XXXXXXXX">
+            </div>
+            <button class="btn-action" id="btnSend" onclick="sendOTP()">إرسال كود التحقق</button>
+        </div>
+
+        <div class="otp-section" id="otpSection">
+            <div class="form-group">
+                <label id="lblOtp">أدخل كود التحقق:</label>
+                <input type="text" id="otpInput" placeholder="1234">
+            </div>
+            <button class="btn-action" id="btnVerify" onclick="verifyOTP()">تأكيد التحقق</button>
+        </div>
+
+        <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+    <script>
+        let generatedOTP = "";
+        let currentLang = 'ar';
+
+        const translations = {
+            ar: {
+                langBtn: "EN",
+                lblPhone: "رقم الهاتف:",
+                btnSend: "إرسال كود التحقق",
+                lblOtp: "أدخل كود التحقق:",
+                btnVerify: "تأكيد التحقق",
+                sendSuccess: "تم إرسال الكود بنجاح! الكود الخاص بك هو: ",
+                enterPhone: "يرجى إدخال رقم الهاتف أولاً",
+                verifySuccess: "تم التحقق بنجاح! مرحباً بك في حُـــلـــه",
+                verifyError: "كود التحقق غير صحيح، حاول مجدداً"
+            },
+            en: {
+                langBtn: "العربية",
+                lblPhone: "Phone Number:",
+                btnSend: "Send Verification Code",
+                lblOtp: "Enter Verification Code:",
+                btnVerify: "Verify Code",
+                sendSuccess: "Code sent successfully! Your code is: ",
+                enterPhone: "Please enter your phone number first",
+                verifySuccess: "Verified successfully! Welcome to HULLAH",
+                verifyError: "Invalid code, please try again"
+            }
+        };
+
+        function sendOTP() {
+            const phone = document.getElementById("phoneInput").value;
+            const statusMsg = document.getElementById("statusMsg");
+            
+            if(!phone) {
+                statusMsg.className = "status-msg error";
+                statusMsg.innerText = translations[currentLang].enterPhone;
+                return;
+            }
+
+            // توليد كود عشوائي
+            generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            document.getElementById("otpSection").style.display = "block";
+            statusMsg.className = "status-msg success";
+            statusMsg.innerText = translations[currentLang].sendSuccess + generatedOTP;
+            
+            // إظهار تنبيه فور إرسال الكود ليصلك مباشرة
+            alert(translations[currentLang].sendSuccess + generatedOTP);
+        }
+
+        function verifyOTP() {
+            const inputOTP = document.getElementById("otpInput").value;
+            const statusMsg = document.getElementById("statusMsg");
+
+            if (inputOTP === generatedOTP && generatedOTP !== "") {
+                statusMsg.className = "status-msg success";
+                statusMsg.innerText = translations[currentLang].verifySuccess;
+            } else {
+                statusMsg.className = "status-msg error";
+                statusMsg.innerText = translations[currentLang].verifyError;
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.documentElement.lang = currentLang;
+
+            const t = translations[currentLang];
+            document.querySelector('.btn-lang').innerText = t.langBtn;
+            document.getElementById('lblPhone').innerText = t.lblPhone;
+            document.getElementById('btnSend').innerText = t.btnSend;
+            document.getElementById('lblOtp').innerText = t.lblOtp;
+            document.getElementById('btnVerify').innerText = t.btnVerify;
+        }
+    </script>
 </body>
 </html>
-
